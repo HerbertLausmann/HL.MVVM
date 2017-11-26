@@ -18,7 +18,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Input;
 
-namespace HL.MVVM.Async
+namespace HL.MVVM.Threading
 {
     /// <summary>
     /// A Relay Command that is executed on a Thread apart that can be paused/resumed and cancelled. It also can report progress information;

@@ -39,7 +39,7 @@ namespace HL.MVVM.Async
         public bool IsRunning => _IsRunning;
 
         public Action<object> Action { get { return _Action; } }
-        public Predicate<object> CanExecutePredicate { get { return _CanExecutePredicate; }}
+        public Predicate<object> CanExecutePredicate { get { return _CanExecutePredicate; } }
 
         /// <summary>
         /// Initializes the RelayCommand with an Action to be executed. The CanExecutePredicate is optional.
@@ -74,11 +74,17 @@ namespace HL.MVVM.Async
                 _IsRunning = true;
 
                 SafeInvoke(() => OnPropertyChanged("IsRunning"));
-
-                _Action?.Invoke(parameter);
-
+                try
+                {
+                    _Action?.Invoke(parameter);
+                }
+                catch (Exception e)
+                {
+                    _IsRunning = false;
+                    SafeInvoke(() => OnPropertyChanged("IsRunning"));
+                    throw e;
+                }
                 _IsRunning = false;
-
                 SafeInvoke(() => OnPropertyChanged("IsRunning"));
             });
         }

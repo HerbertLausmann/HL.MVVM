@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>1.0.50.6539</AssemblyVersion>
-    <FileVersion>1.0.50.6539</FileVersion>
+    <AssemblyVersion>1.0.62.6540</AssemblyVersion>
+    <FileVersion>1.0.62.6540</FileVersion>
     <ApplicationIcon />
     <OutputType>Library</OutputType>
     <StartupObject />

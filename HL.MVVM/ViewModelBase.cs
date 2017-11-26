@@ -90,6 +90,23 @@ namespace HL.MVVM
             }
         }
         /// <summary>
+        /// Try to return a ThreadRelayCommand. If it doesn't exists, create it using the Command param and then return it.
+        /// </summary>
+        /// <param name="Command">The command to be created/returned</param>
+        /// <param name="Name">The name of the ThreadRelayCommand</param>
+        /// <returns>Returns the ThreadRelayCommand</returns>
+        protected Threading.ThreadRelayCommand GetCommand(Threading.ThreadRelayCommand Command, [System.Runtime.CompilerServices.CallerMemberName]string Name = null)
+        {
+            begin:
+            if (_Commands.TryGetValue(Name, out ICommand cmd))
+                return cmd as Threading.ThreadRelayCommand;
+            else
+            {
+                _Commands.Add(Name, Command);
+                goto begin;
+            }
+        }
+        /// <summary>
         /// Try to return the Command by its name. If does not exists, retuns null.
         /// </summary>
         /// <param name="Name">The Command's name</param>

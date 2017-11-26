@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace HL.MVVM
 {
@@ -40,13 +41,28 @@ namespace HL.MVVM
             SafeInvoke(() => RequerySuggested?.Invoke(sender, e));
         }
 
+        //The code bellow is used to supress multiple calls in a short while
+        private static Task CallSupresser;
+        private static void OnRegisteredObjectChanged(object sender, EventArgs e)
+        {
+            if (CallSupresser == null || CallSupresser.IsCompleted == true)
+            {
+                CallSupresser?.Dispose();
+                CallSupresser = Task.Run(async () =>
+                {
+                    await Task.Delay(100);
+                    OnRequerySuggested(sender, e);
+                });
+            }
+        }
+
         /// <summary>
         /// Registers the given object to be monitored. When any property within it changes, it will suggest a global requery for all the linked Commands.
         /// </summary>
         /// <param name="obj">An object that inherits from the INotifyPropertyChanged interface</param>
         public static void RegisterObject(INotifyPropertyChanged obj)
         {
-            obj.PropertyChanged += OnRequerySuggested;
+            obj.PropertyChanged += OnRegisteredObjectChanged;
         }
 
         /// <summary>
@@ -55,7 +71,7 @@ namespace HL.MVVM
         /// <param name="obj">An object that inherits from the INotifyPropertyChanged interface</param>
         public static void UnRegisterObject(INotifyPropertyChanged obj)
         {
-            obj.PropertyChanged -= OnRequerySuggested;
+            obj.PropertyChanged -= OnRegisteredObjectChanged;
         }
 
         /// <summary>

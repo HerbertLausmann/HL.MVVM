@@ -59,6 +59,6 @@ namespace System
         /// <summary>
         /// Represents a collection of custom properties associated with an object.
         /// </summary>
-        private class PropertyBag : System.Collections.Generic.Dictionary<string, object> { }
+        private class PropertyBag : Dictionary<string, object> { }
     }
 }

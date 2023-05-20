@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace System.IO
         /// <param name="data">An array of objects representing the values in the CSV row.</param>
         public static void WriteCSVRow(this FileStream stream, params object[] data)
         {
-            string value = String.Empty;
+            string value = string.Empty;
             if (stream.Position > 0)
                 stream.WriteText(Environment.NewLine);
             else
@@ -41,7 +42,7 @@ namespace System.IO
 
                 stream.WriteText(value);
 
-                if (x != (data.Length - 1))
+                if (x != data.Length - 1)
                 {
                     stream.WriteText(";");
                 }

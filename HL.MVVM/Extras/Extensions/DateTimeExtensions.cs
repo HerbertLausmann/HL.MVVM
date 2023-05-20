@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace System
 {
-    internal static class DateTimeExtensions
+    public static class DateTimeExtensions
     {
         public static bool IsOlderThan(this DateTime date, double days)
         {

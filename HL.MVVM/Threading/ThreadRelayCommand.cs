@@ -14,6 +14,7 @@ are met:
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows.Input;
@@ -88,7 +89,9 @@ namespace HL.MVVM.Threading
                 {
                     try
                     {
+
                         _ExecuteDelegate.Invoke(_ExecuteEventArgs);
+
                     }
                     catch (Exception e)
                     {
@@ -99,7 +102,7 @@ namespace HL.MVVM.Threading
                 SafeInvoke(() => OnPropertyChanged("IsRunning"));
             });
             _Thread.IsBackground = true;
-            _Thread.SetApartmentState(ApartmentState.MTA);
+            _Thread.SetApartmentState(ApartmentState.STA);
             _Thread.Start();
             OnPropertyChanged("CanPause");
             OnPropertyChanged("CanResume");
@@ -113,11 +116,11 @@ namespace HL.MVVM.Threading
         /// <summary>
         /// Check whether the undergoing thread can be paused
         /// </summary>
-        public bool CanPause => (_ExecuteEventArgs != null && IsRunning && !_ExecuteEventArgs.IsCancelled) ? !_ExecuteEventArgs.IsPaused & _ExecuteEventArgs.Pausable : false;
+        public bool CanPause => (_ExecuteEventArgs != null && IsRunning && !_ExecuteEventArgs.IsCancelled) ? !_ExecuteEventArgs.IsPaused && _ExecuteEventArgs.Pausable : false;
         /// <summary>
         /// Check whether the undergoing thread can be resumed
         /// </summary>
-        public bool CanResume => (_ExecuteEventArgs != null && IsRunning && !_ExecuteEventArgs.IsCancelled) ? _ExecuteEventArgs.IsPaused & _ExecuteEventArgs.Pausable : false;
+        public bool CanResume => (_ExecuteEventArgs != null && IsRunning && !_ExecuteEventArgs.IsCancelled) ? _ExecuteEventArgs.IsPaused && _ExecuteEventArgs.Pausable : false;
         /// <summary>
         /// Check whether the undergoing thread can be cancelled
         /// </summary>
@@ -281,6 +284,9 @@ namespace HL.MVVM.Threading
             public void ReportProgressText(string ProgressText)
             {
                 _ProgressText = ProgressText;
+                //retirar depois
+                System.Diagnostics.Debug.WriteLine(DateTime.Now.ToShortDateString() + " | " + DateTime.Now.ToLongTimeString() + " - " + ProgressText);
+
                 ModelBase.SafeInvoke(() =>
                 {
                     _Parent.OnPropertyChanged("ProgressText");
@@ -342,6 +348,14 @@ namespace HL.MVVM.Threading
             public void Sleep()
             {
                 System.Threading.Thread.Sleep(0);
+            }
+
+            /// <summary>
+            /// Freezes the Command Thread for the time specified.
+            /// </summary>
+            public void Sleep(int time)
+            {
+                System.Threading.Thread.Sleep(time);
             }
 
             /// <summary>

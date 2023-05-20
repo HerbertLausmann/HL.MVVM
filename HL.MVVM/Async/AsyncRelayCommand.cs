@@ -69,7 +69,7 @@ namespace HL.MVVM.Async
 
         public void Execute(object parameter)
         {
-            _Task = Task.Run(() =>
+            _Task = Task.Factory.StartNew(() =>
             {
                 _IsRunning = true;
 
@@ -86,7 +86,7 @@ namespace HL.MVVM.Async
                 }
                 _IsRunning = false;
                 SafeInvoke(() => OnPropertyChanged("IsRunning"));
-            });
+            }, TaskCreationOptions.LongRunning);
         }
 
         public void ForceRequery()
